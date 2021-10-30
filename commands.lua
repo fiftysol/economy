@@ -1,6 +1,6 @@
 -- Source for the commands in the bot (they reference this repo)
 local src = discord.getData("economy-src")
-if src then
+if src and src ~= "" then
 	src = json.decode(src)
 else
 	src = {
@@ -11,7 +11,12 @@ end
 
 if os.time() >= src.expires then
 	local repo = "fiftysol/economy"
-	local head, body = discord.http("https://api.github.com/repos/" .. repo .. "/releases")
+	local head, body = discord.http("https://api.github.com/repos/" .. repo .. "/releases", {
+		{
+			"user-agent",
+			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"
+		}
+	})
 	local releases = json.decode(body)
 
 	local branches = {}
