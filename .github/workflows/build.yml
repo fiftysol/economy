@@ -23,8 +23,18 @@ jobs:
       - name: Install LuaFileSystem
         run: luarocks install luafilesystem
 
-      - name: Generate preprocessed module
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Generate preprocessed module (main)
+        if: steps.extract_branch.outputs.branch == 'main'
         run: lua preprocess.lua
+
+      - name: Generate preprocessed module (debug)
+        if: steps.extract_branch.outputs.branch != 'main'
+        run: lua preprocess.lua --debug true
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
