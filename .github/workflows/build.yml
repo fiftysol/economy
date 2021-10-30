@@ -61,6 +61,7 @@ jobs:
         with:
           name: ${{ steps.release.outputs.version }}
           tag_name: ${{ steps.release.outputs.version }}
+          target_commitish: ${{ steps.extract_branch.outputs.branch }}
           files: |
             ./dist.lua
         env:
