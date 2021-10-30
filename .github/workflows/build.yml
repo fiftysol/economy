@@ -36,6 +36,10 @@ jobs:
         if: steps.extract_branch.outputs.branch != 'main'
         run: lua preprocess.lua --debug true
 
+      - name: Gather release information
+        id: release
+        run: lua print-release.lua
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
@@ -43,10 +47,6 @@ jobs:
 
       - name: Run linker
         run: python link.py
-
-      - name: Gather release information
-        id: release
-        run: lua print-release.lua
 
       - uses: mukunku/tag-exists-action@v1.0.0
         id: check-tag

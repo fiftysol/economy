@@ -1,9 +1,8 @@
-local version = "1.0.0"
-
 return {
+	version = "1.0.0",
 @#IF DEBUG
-	version = version .. "." .. os.date("%Y.%m.%d.%H.%M.%S") .. ".debug",
+	debug = true,
 @#ELSE
-	version = version,
+	debug = false,
 @#ENDIF
 }
