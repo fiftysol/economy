@@ -7,7 +7,7 @@ local mainFileFormat = "economy-%s-%d"
 local fileFormat = debugFileFormat
 @#ELSE
 local filePrefix = mainFileFormat
-@#END
+@#ENDIF
 
 local actions = {
 	-- keeps track of what has been done until now
