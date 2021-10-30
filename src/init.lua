@@ -1,0 +1,1 @@
+print("v" .. require("./release.lua").version)

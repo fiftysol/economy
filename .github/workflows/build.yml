@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  preprocess:
+    name: Preprocess, link and create release
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: leafo/gh-actions-lua@v8.0.0
+        with:
+          luaVersion: "5.2"
+
+      - uses: leafo/gh-actions-luarocks@v4.0.0
+
+      - name: Install LuaFileSystem
+        run: luarocks install luafilesystem
+
+      - name: Generate preprocessed module
+        run: lua preprocess.lua
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.8"
+
+      - name: Run linker
+        run: python link.py
+
+      - name: Gather release information
+        id: release
+        run: lua print-release.lua
+
+      - uses: mukunku/tag-exists-action@v1.0.0
+        id: check-tag
+        with:
+          tag: ${{ steps.release.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets
+        if: steps.check-tag.outputs.exists != 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.release.outputs.version }}
+          tag_name: ${{ steps.release.outputs.version }}
+          files: |
+            ./dist.lua
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
